@@ -1,4 +1,6 @@
 # asleep: a sleep classifier for wearable sensor data using machine learning
+I made a few minor hardcoded adjustments to ensure this classifier runs on NHANES 2011–2014 data.
+
 This is a Python package for classifying sleep stages from wearable sensor data / wrist - worn accelerometer. The underlying model
 was trained and tested in 1000 + nights of multi - centre polysomnography with tri - axial accelerometer data.
 
@@ -15,14 +17,10 @@ The key features of this package are as follows:
 - Python 3.8
 - Java 8 (1.8.0) or greater
 
-Check with:
-```bash
-$ python --version
-$ java -version
-```
-
 # Installation
 ```bash
+$ conda create -n asleep python=3.8 openjdk pip
+$ conda activate asleep 
 $ pip install asleep
 ```
 
@@ -30,16 +28,8 @@ $ pip install asleep
 All the processing will be much faster after the first time because the model weights will to have to be downloaded
 the first time that the package is used.
 ```shell
-# Process an AX3 file
-$ get_sleep sample.cwa
 
-# Or an ActiGraph file
-$ get_sleep sample.gt3x
-
-# Or a GENEActiv file
-$ get_sleep sample.bin
-
-# Or a CSV file (see data format below)
+# CSV file (see data format below)
 $ get_sleep sample.csv
 ```
 
@@ -48,54 +38,62 @@ Output
 Summary
 -------
 {
-    "Filename": "sample.cwa",
-    "Filesize(MB)": 65.1,
-    "Device": "Axivity",
-    "DeviceID": 2278,
-    "ReadErrors": 0,
-    "SampleRate": 100.0,
-    "ReadOK": 1,
-    "StartTime": "2013-10-21 10:00:07",
-    "EndTime": "2013-10-28 10:00:01",
-    "Total sleep duration(min)": 655.7,
-    "Total overnight sleep(min)": 43132,
-    ...
+    "Filename": "sample.csv",
+    "Device": ".csv",
+    "Filesize(MB)": 2272.8,
+    "SampleRate": 77,
+    "LowpassOK": 1,
+    "LowpassCutoff(Hz)": 20,
+    "CalibNumSamples": 29396,
+    "CalibErrorBefore(mg)": 14.849037863314152,
+    "CalibErrorAfter(mg)": 3.347760997712612,
+    "CalibNumIters": 33,
+    "CalibOK": 1,
+    "CalibxIntercept": -0.022534770891070366,
+    "CalibyIntercept": 0.015741821378469467,
+    "CalibzIntercept": -0.008018394000828266,
+    "CalibxSlope": 0.9971864223480225,
+    "CalibySlope": 0.9986444711685181,
+    "CalibzSlope": 1.0008964538574219,
+    "ResampleRate": 30,
+    "NumTicksAfterResample": 20753067,
+    "WearTime(days)": 8.006584104930555,
+    "NonwearTime(days)": 0.0,
+    "NumNonwearEpisodes": 0,
+    "StartTime": "2000-01-08 12:30:00",
+    "EndTime": "2000-01-16 12:39:28"
 }
-
-Estimated total sleep duration
----------------------
-              total sleep duration(min)
-time
-2013 - 10 - 21     435.2
-2013 - 10 - 22     436.2
-2013 - 10 - 23    432.2
-...
 
 Output: outputs /sample/
 ```
 
 # Visualisation
 You can visualise the sleep parameters using the following command:
+This now works with --remove_intermediate_files
 ```shell
 $ visu_sleep PATH_TO_OUTPUT_FOLDER
 ```
+![sleep](https://github.com/user-attachments/assets/e72770ca-a3ac-42f6-924f-028d2c2210d8)
 
 
 # Processing CSV files
-If a CSV file is provided, it must have the following header: time, x, y, z.
-
+I hardcoded the CSV processing to ONLY work with NHANES files.
+The CSV file must have the following headers: HEADER_TIMESTAMP, X, Y, Z.
 Example:
 ```shell
-time, x, y, z
-2013 - 10 - 21 10: 00: 08.000, -0.078923, 0.396706, 0.917759
-2013 - 10 - 21 10: 00: 08.010, -0.094370, 0.381479, 0.933580
-2013 - 10 - 21 10: 00: 08.020, -0.094370, 0.366252, 0.901938
-2013 - 10 - 21 10: 00: 08.030, -0.078923, 0.411933, 0.901938
+HEADER_TIMESTAMP,X,Y,Z
+2000-01-08 12:30:00.000,0.856,0.164,0.34
+2000-01-08 12:30:00.013,0.859,0.173,0.416
+2000-01-08 12:30:00.025,0.801,0.173,0.446
+2000-01-08 12:30:00.038,0.771,0.205,0.443
+2000-01-08 12:30:00.050,0.856,0.182,0.334
+2000-01-08 12:30:00.063,0.865,0.194,0.37
+2000-01-08 12:30:00.075,0.853,0.238,0.399
+2000-01-08 12:30:00.088,0.894,0.217,0.308
+2000-01-08 12:30:00.100,0.886,0.267,0.396
 ```
 
-
-# Citation
-If you want to use our package for your project, please cite our paper below:
+# Please remember to cite the original paper and author—they did a fantastic job!
 ```bibtex
 @article{yuan2024self,
   title={Self-supervised learning of accelerometer data provides new insights for sleep and its association with mortality},
