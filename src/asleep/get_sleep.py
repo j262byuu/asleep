@@ -321,7 +321,8 @@ def main():
         raw_data_path, info_data_path, resample_hz, args)
     if args.remove_intermediate_files:
         os.remove(raw_data_path)
-        os.remove(info_data_path)
+        # We do need this file as sanity check
+        # os.remove(info_data_path)
 
     # 1.1 Transform data into a usable format for inference
     data2model, times, non_wear = transform_data2model_input(
@@ -337,8 +338,9 @@ def main():
         print("light shape: {}".format(light.shape))
 
     # times and non-wear flag need to be stored for visualization
-    if args.remove_intermediate_files:
-        os.remove(data2model_path)
+    # Yep, I commented out the following code since we do need data2model
+    # if args.remove_intermediate_files:
+        # os.remove(data2model_path)
 
     # 2. sleep window detection and inference
     (binary_y, all_sleep_wins_df, sleep_wins_long_per_day_df, master_acc,
