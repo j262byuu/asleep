@@ -43,10 +43,17 @@ def read(filepath, resample_hz='uniform'):
         if ftype == ".csv":
             data = pd.read_csv(
                 filepath,
-                usecols=['time', 'x', 'y', 'z'],
-                parse_dates=['time'],
-                index_col='time'
+                # I updated this using NHANES 2011–2014 column names. It’s not ideal hardcoding, but it gets the job done.
+                usecols=['HEADER_TIMESTAMP', 'X', 'Y', 'Z'],
+                parse_dates=['HEADER_TIMESTAMP'],
+                index_col='HEADER_TIMESTAMP',
+                # Adapted from stepcount package
+                dtype={'X': 'f4', 'Y': 'f4', 'Z': 'f4'},
             )
+            # Rename to time,x,y,z
+            data = data.rename(columns={'HEADER_TIMESTAMP': 'time', 'X': 'x', 'Y': 'y', 'Z': 'z'})
+            data.index.name = 'time'
+            
         elif ftype == ".pkl":
             data = pd.read_pickle(filepath)
         else:
